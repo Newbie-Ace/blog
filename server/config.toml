@@ -1,0 +1,19 @@
+mode = "debug"
+
+[server]
+port = 8000
+secret = "ssss"
+
+[database]
+type = "postgres"
+host = "localhost"
+user = "postgres"
+password = "passwd"
+dbname = "blog"
+port = 5432
+
+[redis]
+host = "localhost"
+port = 6379
+password = ""
+db = 1
