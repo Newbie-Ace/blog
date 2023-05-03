@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strings"
 )
 
 func LoggerConfigMiddleware() gin.HandlerFunc {
@@ -16,6 +17,9 @@ func LoggerConfigMiddleware() gin.HandlerFunc {
 	loggerWriter := io.MultiWriter(fileWriter, os.Stdout)
 
 	loggerFormat := func(param gin.LogFormatterParams) string {
+		if strings.HasPrefix(param.Path, "/api/v1/swagger") {
+			return ""
+		}
 		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
 			param.ClientIP,
 			param.TimeStamp.Format(g.TimeFormat),

@@ -4,17 +4,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noobHuKai/app/g"
 	"github.com/noobHuKai/app/model/common/response"
-	systemRes "github.com/noobHuKai/app/model/system/response"
-
 	"strconv"
 )
 
 type UserApi struct{}
 
-func (u *UserApi) GetUserInfo(c *gin.Context) {
+// Info
+// @Tags     User
+// @Summary  用户信息
+// @Security Bearer
+// @Success  200   {object}  response.Response{data=system.SysUser}
+// @Router   /user [get]
+func (u *UserApi) Info(c *gin.Context) {
 	uidStr, exists := c.Get("uid")
 	if !exists {
-		response.FailWithMsg(c, "获取用户失败")
+		response.FailWithMsg(c, g.ErrUserNotFound.Error())
 		return
 	}
 	uid, err := strconv.ParseUint(uidStr.(string), 10, 64)
@@ -29,14 +33,6 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		response.FailWithMsg(c, err.Error())
 		return
 	}
-	res := systemRes.UserBasicInfoResponse{
-		UserId:   strconv.Itoa(int(userInter.ID)),
-		UserName: userInter.Username,
-		UserRole: userInter.Role,
-	}
-	response.OkWithData(c, res)
-}
 
-func (u *UserApi) GetUserRoutes(c *gin.Context) {
-	response.OkWithData(c, g.WebRouter)
+	response.OkWithData(c, userInter)
 }

@@ -10,7 +10,7 @@ type RouterGroup struct {
 }
 
 func (r *RouterGroup) InitV1Router(router *gin.RouterGroup) {
-	systemRouterGroup := router.Group("system")
+	systemRouterGroup := router.Group("")
 	{
 		r.System.InitSystemRouter(systemRouterGroup)
 	}

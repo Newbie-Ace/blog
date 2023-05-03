@@ -24,6 +24,11 @@ func initDatabase() {
 func migrate() {
 	err := g.DB.AutoMigrate(
 		&system.SysUser{},
+		&system.SysBlogType{},
+		&system.SysTag{},
+		&system.SysBlogTag{},
+		&system.SysComment{},
+		&system.SysBlog{},
 	)
 
 	if err != nil {
