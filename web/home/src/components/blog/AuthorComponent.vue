@@ -16,21 +16,15 @@
       <div>xx</div>
     </div>
     <div class="github-icon">
-      <el-icon @click="goToGithub"><IceTea /></el-icon>
+      <el-icon @click="goToGithub">
+        <i class="iconfont icon-GitHub"> </i>
+      </el-icon>
     </div>
   </el-card>
 </template>
 
 <script setup lang="ts">
-import { IceTea } from '@element-plus/icons-vue'
-
-// gitbub网址
-const githubUrl = 'https://github.com/Nalamal'
-
-// 点击跳转github按钮，跳转到github首页
-const goToGithub = () => {
-  window.location.href = githubUrl
-}
+import { goToGithub } from '@/hooks/goToGithub'
 </script>
 
 <style lang="less" scoped>
@@ -90,8 +84,6 @@ const goToGithub = () => {
   left: 50%;
   bottom: 30px;
   transform: translateX(-50%);
-  font-size: 30px;
-
   :hover {
     color: #6b8770;
     cursor: pointer;

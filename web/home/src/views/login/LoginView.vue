@@ -4,7 +4,7 @@
       <div class="login-avatar">
         <img src="@/assets/img/avatar.jpg" />
       </div>
-      <div class="desc-box">一个小众化的博客</div>
+      <div class="desc-box">一个不知名的小站</div>
       <div class="btn-group">
         <el-button color="#6b8770" round @click="goToHome">进入博客</el-button>
         <el-button color="#6b8770" round @click="goToGithub">GitHub</el-button>
@@ -15,14 +15,7 @@
 
 <script setup lang="ts">
 import router from '@/router'
-
-// gitbub网址
-const githubUrl = 'https://github.com/Nalamal'
-
-// 点击跳转github按钮，跳转到github首页
-const goToGithub = () => {
-  window.location.href = githubUrl
-}
+import { goToGithub } from '@/hooks/goToGithub'
 
 // 点击按钮，进入博客主页面
 const goToHome = () => {
@@ -38,7 +31,7 @@ const goToHome = () => {
 .login-box {
   width: 300px;
   height: 550px;
-  background-color: #ededed;
+  background-color: #fff;
   border-radius: 10px;
   position: relative;
   left: 50%;

@@ -9,7 +9,7 @@
     ></el-input>
     <div class="desc-text">
       <div class="desc-face">（●＞ω＜●）</div>
-      <div class="desc-font">这里什么都没有, 要不要搜点东西</div>
+      <div class="desc-font">这里什么都没有, 要不要试着搜点东西...</div>
     </div>
   </el-card>
 </template>
@@ -43,7 +43,7 @@ const inputSearchValue = ref('')
   left: 50%;
   top: 60%;
   transform: translate(-50%, -50%);
-  width: 350px;
+  width: 450px;
   height: 150px;
   font-size: 24px;
 }
