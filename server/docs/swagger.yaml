@@ -1,0 +1,376 @@
+basePath: /api/v1
+definitions:
+  request.CreateBlog:
+    properties:
+      content:
+        description: 内容
+        type: string
+      tags:
+        description: 标签
+        items:
+          type: integer
+        type: array
+      title:
+        description: 标题
+        type: string
+      type_id:
+        description: 博客类型
+        type: integer
+    type: object
+  request.CreateBlogTag:
+    properties:
+      name:
+        description: tag 名称
+        type: string
+    type: object
+  request.CreateBlogType:
+    properties:
+      name:
+        description: 类型名称
+        type: string
+    type: object
+  request.Login:
+    properties:
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  request.Register:
+    properties:
+      nickname:
+        description: 昵称
+        type: string
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  response.Login:
+    properties:
+      expiresAt:
+        type: string
+      token:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  system.BlogContent:
+    properties:
+      blog:
+        $ref: '#/definitions/system.SysBlog'
+      tags:
+        items:
+          $ref: '#/definitions/system.SysTag'
+        type: array
+    type: object
+  system.SysBlog:
+    properties:
+      blog_type:
+        $ref: '#/definitions/system.SysBlogType'
+      collect_count:
+        type: integer
+      comment_count:
+        type: integer
+      content:
+        type: string
+      cover_image:
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: ID
+        type: integer
+      like_count:
+        type: integer
+      status:
+        type: integer
+      title:
+        type: string
+      type_id:
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/system.SysUser'
+        description: 外键
+      user_id:
+        type: integer
+      view_count:
+        type: integer
+    type: object
+  system.SysBlogType:
+    properties:
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: ID
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  system.SysTag:
+    properties:
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: ID
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  system.SysUser:
+    properties:
+      age:
+        description: 用户年龄
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      email:
+        description: 用户邮箱
+        type: string
+      header_img:
+        description: 用户头像
+        type: string
+      id:
+        description: ID
+        type: integer
+      nickname:
+        description: 用户昵称
+        type: string
+      phone:
+        description: 用户手机号
+        type: string
+      role:
+        description: 用户角色
+        type: string
+      status:
+        description: 用户状态
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+      username:
+        description: 用户登录名
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact:
+    name: noobHuKai
+    url: https://github.com/noobHuKai
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit/
+  title: Blog API
+  version: "1.0"
+paths:
+  /blog:
+    get:
+      parameters:
+      - description: 页数
+        in: query
+        name: page_num
+        type: integer
+      - description: 页大小
+        in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/system.BlogContent'
+                  type: array
+              type: object
+      summary: 获取博客列表
+      tags:
+      - Blog
+    post:
+      parameters:
+      - description: 创建博客
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBlog'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 创建博客
+      tags:
+      - Blog
+  /blog/{id}:
+    get:
+      parameters:
+      - description: Blog ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/system.BlogContent'
+              type: object
+      summary: 获取博客内容
+      tags:
+      - Blog
+  /blog/tag:
+    post:
+      parameters:
+      - description: 标签名称
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBlogTag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/system.SysTag'
+              type: object
+      summary: 创建博客标签
+      tags:
+      - Blog
+      - Tag
+  /blog/type:
+    post:
+      parameters:
+      - description: 类型名称
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBlogType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/system.SysBlogType'
+              type: object
+      summary: 创建博客类型
+      tags:
+      - Blog
+      - Tag
+  /user:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/system.SysUser'
+              type: object
+      security:
+      - Bearer: []
+      summary: 用户信息
+      tags:
+      - User
+  /user/login:
+    post:
+      parameters:
+      - description: 用户名, 密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.Login'
+              type: object
+      summary: 用户登录
+      tags:
+      - User
+  /user/register:
+    post:
+      parameters:
+      - description: 用户名, 密码, 昵称
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/system.SysUser'
+              type: object
+      summary: 用户注册
+      tags:
+      - User
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

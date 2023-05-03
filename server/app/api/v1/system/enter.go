@@ -9,10 +9,12 @@ import (
 type ApiGroup struct {
 	UserApi
 	CommonApi
+	BlogApi
 }
 
 var (
 	userService = service.ServiceGroupApp.SystemServiceGroup.UserService
+	blogService = service.ServiceGroupApp.SystemServiceGroup.BlogService
 )
 
 var (

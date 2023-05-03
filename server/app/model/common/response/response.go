@@ -2,6 +2,7 @@ package response
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noobHuKai/app/g"
 	"net/http"
 )
 
@@ -10,7 +11,6 @@ const (
 	CodeBadRequest          = 400 // 通用失败
 	CodeUnauthorized        = 401 // 未授权
 	CodeUnProcessableEntity = 422 // 请求格式错误
-
 )
 
 type JsonResponse struct {
@@ -18,14 +18,20 @@ type JsonResponse struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
+type Response = JsonResponse
 
 func ResultJson(c *gin.Context, code int, msg string, data interface{}) {
-	c.JSON(http.StatusOK, JsonResponse{
+	c.JSON(http.StatusOK, Response{
 		code,
 		msg,
 		data,
 	})
 	c.Abort()
+}
+
+func ErrResultJson(c *gin.Context, code int, msg string, data interface{}) {
+	g.Logger.Error(msg)
+	ResultJson(c, code, msg, data)
 }
 
 func Ok(c *gin.Context) {
@@ -39,19 +45,23 @@ func OkWithData(c *gin.Context, data interface{}) {
 }
 
 func Fail(c *gin.Context) {
-	ResultJson(c, CodeBadRequest, "", nil)
+	ErrResultJson(c, CodeBadRequest, "", nil)
 }
 func FailWithMsg(c *gin.Context, msg string) {
-	ResultJson(c, CodeBadRequest, msg, nil)
+	ErrResultJson(c, CodeBadRequest, msg, nil)
 }
 func FailWithData(c *gin.Context, data interface{}) {
-	ResultJson(c, CodeBadRequest, "", data)
+	ErrResultJson(c, CodeBadRequest, "", data)
 }
 
 func FailFormatError(c *gin.Context, msg string) {
-	ResultJson(c, CodeUnProcessableEntity, msg, nil)
+	ErrResultJson(c, CodeUnProcessableEntity, msg, nil)
+}
+
+func FailRequestContentError(c *gin.Context) {
+	FailFormatError(c, g.ErrRequestContent.Error())
 }
 
 func FailUnauthorized(c *gin.Context, msg string) {
-	ResultJson(c, CodeUnauthorized, msg, nil)
+	ErrResultJson(c, CodeUnauthorized, msg, nil)
 }

@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noobHuKai/app/g"
 	"github.com/noobHuKai/app/model/common/response"
+	"strconv"
+	"strings"
 )
 
 var ctx = context.Background()
@@ -12,21 +14,32 @@ var ctx = context.Background()
 func TokenAuthorizeMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// get token
-		token := c.Request.Header.Get("Authorization")
-		if token == "" {
-			response.FailUnauthorized(c, "Not Found Token")
+		rawToken := c.Request.Header.Get("Authorization")
+		if rawToken == "" {
+			response.FailUnauthorized(c, g.ErrTokenNotFound.Error())
 			return
 		}
-		uid, err := g.RDB.Get(ctx, token).Result()
+		if !strings.HasPrefix(rawToken, "Bearer ") {
+			response.FailUnauthorized(c, g.ErrTokenNotFound.Error())
+			return
+		}
+		token := strings.TrimPrefix(rawToken, "Bearer ")
+
+		uidStr, err := g.RDB.Get(ctx, token).Result()
 		if err != nil {
 			g.Logger.Error(err.Error())
-			response.FailUnauthorized(c, "token is expired")
+			response.FailUnauthorized(c, g.ErrTokenIsExpired.Error())
 			return
 		}
 
 		RefreshToken(token)
 
-		c.Set("uid", uid)
+		uid, err := strconv.Atoi(uidStr)
+		if err != nil {
+			response.FailUnauthorized(c, g.ErrTokenNotFound.Error())
+			return
+		}
+		c.Set("uid", uint(uid))
 		c.Next()
 	}
 }
